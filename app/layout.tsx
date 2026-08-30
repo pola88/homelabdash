@@ -3,6 +3,7 @@ import { Caprasimo, Figtree } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
+import { getDashboardConfig } from "@/lib/dashboard-config";
 
 const caprasimo = Caprasimo({
   weight: "400",
@@ -25,6 +26,8 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const config = getDashboardConfig();
+
   return (
     <html
       lang="es"
@@ -40,7 +43,7 @@ export default async function RootLayout({
       </head>
       <body className="min-h-screen pb-[72px]">
         <ThemeProvider>
-          <AppHeader />
+          <AppHeader areas={config.areas} />
           <main className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-7">
             {children}
           </main>

@@ -1,0 +1,40 @@
+# Dashboard configuration example.
+# Copy this file to `dashboard.yaml` and adjust it to your own setup.
+# `dashboard.yaml` is gitignored so your real entity IDs stay local.
+
+areas:
+  # Each area is a tab in the dashboard.
+  - id: living_room # Unique, stable identifier (used in the URL).
+    name: "Living Room" # Display name shown in the tab.
+    cards:
+      # A light toggle card.
+      - type: light
+        entity: light.living_room
+
+      # A motion / occupancy sensor card (binary_sensor).
+      - type: motion
+        entity: binary_sensor.living_room_occupancy
+
+      # A climate card combining a temperature and a humidity sensor.
+      - type: climate
+        temperature_entity: sensor.living_room_temperature
+        humidity_entity: sensor.living_room_humidity
+
+  - id: kitchen
+    name: "Kitchen"
+    cards:
+      - type: light
+        entity: light.kitchen
+      - type: motion
+        entity: binary_sensor.kitchen_occupancy
+
+  - id: infra
+    name: "Homelab"
+    cards:
+      # A metric card renders a single numeric sensor value with a label.
+      - type: metric
+        entity: sensor.proxmox_pve_cpu_usage
+        label: "Proxmox CPU"
+      - type: metric
+        entity: sensor.pihole_dns_queries_today
+        label: "DNS queries today"
