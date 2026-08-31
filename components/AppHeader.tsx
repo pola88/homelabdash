@@ -9,7 +9,7 @@ import {
 } from "@/components/tremor/TabNavigation";
 import { Button } from "./tremor/Button";
 import { cx } from "@/lib/utils";
-import { useSearchParams } from "next/navigation";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 
 type AppHeaderProps = {
@@ -23,8 +23,9 @@ const pill = (active: boolean) =>
 
 export const AppHeader = ({ areas }: AppHeaderProps) => {
   const { theme, toggle } = useTheme();
-  const searchParams = useSearchParams();
-  const currentArea = searchParams.get("area") ?? areas[0].id;
+  const pathName = usePathname();
+  const areaNameFromUrl = pathName.match(/^\/areas\/([^/]+)/)?.[1];
+  const currentArea = areaNameFromUrl ?? areas[0].id;
 
   const away = false;
 
@@ -71,7 +72,7 @@ export const AppHeader = ({ areas }: AppHeaderProps) => {
                 )}
                 key={area.id}
               >
-                <Link href={`/?area=${area.id}`}>{area.name}</Link>
+                <Link href={`/areas/${area.id}`}>{area.name}</Link>
               </TabNavigationLink>
             ))}
           </TabNavigation>
