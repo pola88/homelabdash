@@ -10,6 +10,7 @@ import {
 import { Button } from "./tremor/Button";
 import { cx } from "@/lib/utils";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 
 type AppHeaderProps = {
   areas: Pick<Area, "id" | "name">[];
@@ -63,14 +64,14 @@ export const AppHeader = ({ areas }: AppHeaderProps) => {
           <TabNavigation className="bg-surface rounded-pill mt-3 flex w-min items-center gap-2 overflow-x-auto p-1">
             {areas.map((area) => (
               <TabNavigationLink
+                asChild
                 className={cx(
                   "organic-pill px-4.4 min-h-[42px] pb-0 text-[15px] text-white!",
                   pill(area.id === currentArea),
                 )}
                 key={area.id}
-                href={`?area=${area.id}`}
               >
-                {area.name}
+                <Link href={`/?area=${area.id}`}>{area.name}</Link>
               </TabNavigationLink>
             ))}
           </TabNavigation>

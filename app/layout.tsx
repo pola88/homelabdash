@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
 import { getDashboardConfig } from "@/lib/dashboard-config";
+import { HAConnectionProvider } from "@/components/HAConnectionProvider";
 
 const caprasimo = Caprasimo({
   weight: "400",
@@ -42,12 +43,14 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen pb-[72px]">
-        <ThemeProvider>
-          <AppHeader areas={config.areas} />
-          <main className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-7">
-            {children}
-          </main>
-        </ThemeProvider>
+        <HAConnectionProvider>
+          <ThemeProvider>
+            <AppHeader areas={config.areas} />
+            <main className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-7">
+              {children}
+            </main>
+          </ThemeProvider>
+        </HAConnectionProvider>
       </body>
     </html>
   );
