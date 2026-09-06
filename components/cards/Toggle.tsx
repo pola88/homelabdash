@@ -11,9 +11,9 @@ export const Toggle = ({ entityId, label }: ToggleProps) => {
   const currentState = useEntity(entityId);
   return (
     <div>
-      <div>{entityId}</div>
-      <div>{label}</div>
-      <div>{currentState?.state}</div>
+      <div>Id: {entityId}</div>
+      <div>Label: {label ?? currentState?.attributes?.friendly_name}</div>
+      <div>State: {currentState?.state}</div>
     </div>
   );
 };

@@ -1,8 +1,18 @@
 import { broadcastToClients } from "./sse-registry";
+import { entityStateSchema } from "@/lib/schemas/entity-state-schema";
 
 const HA_TOKEN = process.env.HA_TOKEN;
 const HA_URL =
   process.env.HA_WS_URL ?? "ws://homeassistant.local:8123/api/websocket";
+
+const _broadcastToClients = (entity: unknown) => {
+  try {
+    const parsedData = entityStateSchema.parse(entity);
+    broadcastToClients(parsedData);
+  } catch (error) {
+    console.log("entity", entity, "error", error);
+  }
+};
 
 export const connectToHA = () => {
   if (!HA_TOKEN) {
@@ -47,13 +57,12 @@ export const connectToHA = () => {
     if (msg.type === "result" && msg.success && Array.isArray(msg.result)) {
       console.log(`[ha] received ${msg.result.length} initial states`);
       for (const s of msg.result) {
-        broadcastToClients({ entity_id: s.entity_id, state: s.state });
+        _broadcastToClients(s);
       }
     }
 
     if (msg.type === "event" && msg.event?.event_type === "state_changed") {
-      const { entity_id, new_state } = msg.event.data;
-      broadcastToClients({ entity_id, state: new_state?.state });
+      _broadcastToClients(msg.event.data.new_state);
     }
   };
 

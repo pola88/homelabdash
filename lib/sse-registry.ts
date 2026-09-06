@@ -7,25 +7,27 @@ type SSEController = ReadableStreamDefaultController<Uint8Array>;
 // into an empty Set). Pin it to globalThis so both sides share one instance.
 const globalForSSE = globalThis as typeof globalThis & {
   __sseClients?: Set<SSEController>;
-  __sseCache?: Map<string, unknown>;
+  __sseCache?: Map<string, EntityState>;
 };
 
 const clients = (globalForSSE.__sseClients ??= new Set<SSEController>());
 // Last known state per entity, replayed to every newly connected client so a
 // client that joins after the initial HA snapshot still gets a full picture.
-const cache = (globalForSSE.__sseCache ??= new Map<string, unknown>());
+const cache = (globalForSSE.__sseCache ??= new Map<string, EntityState>());
 const encoder = new TextEncoder();
 
-function frame(data: unknown): Uint8Array {
+function frame(data: EntityState): Uint8Array {
   return encoder.encode(`data: ${JSON.stringify(data)}\n\n`);
 }
 
 export function registerSSEClient(controller: SSEController): SSEController {
   clients.add(controller);
-  console.log(`[sse] client connected (${clients.size} total)`);
-  for (const [entity_id, state] of cache) {
+  console.log(
+    `[sse] client connected (${clients.size} total, entities: ${cache.size})`,
+  );
+  for (const [, entity] of cache) {
     try {
-      controller.enqueue(frame({ entity_id, state }));
+      controller.enqueue(frame(entity));
     } catch {
       break;
     }
@@ -39,7 +41,7 @@ export function unregisterSSEClient(controller: SSEController): void {
 }
 
 export function broadcastToClients(data: EntityState): void {
-  cache.set(data.entity_id, data.state);
+  cache.set(data.entity_id, data);
   const message = frame(data);
   for (const controller of clients) {
     try {
