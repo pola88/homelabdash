@@ -1,5 +1,7 @@
-export const HomePage = () => {
-  return <div>Home page</div>;
-};
+import { redirect } from "next/navigation";
+import { getAreas } from "@/lib/dashboard-config";
 
-export default HomePage;
+export default function HomePage() {
+  const areas = getAreas();
+  redirect(`/areas/${areas[0].id}`);
+}

@@ -1,15 +1,11 @@
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { useShallow } from "zustand/react/shallow";
-
-type Entity = {
-  id: string;
-  state: string;
-};
+import type { EntityState } from "@/lib/schemas/entity-state-schema";
 
 type Store = {
-  entities: Record<string, Entity>;
-  updateEntity: (entity: Entity) => void;
+  entities: Record<string, EntityState>;
+  updateEntity: (entity: EntityState) => void;
 };
 
 export const useEntities = create<Store>()(
@@ -17,7 +13,7 @@ export const useEntities = create<Store>()(
     entities: {},
     updateEntity: (entity) =>
       set((state) => {
-        state.entities[entity.id] = entity;
+        state.entities[entity.entity_id] = entity;
       }),
   })),
 );

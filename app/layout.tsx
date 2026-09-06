@@ -3,7 +3,7 @@ import { Caprasimo, Figtree } from "next/font/google";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
-import { getDashboardConfig } from "@/lib/dashboard-config";
+import { getAreas } from "@/lib/dashboard-config";
 import { HAConnectionProvider } from "@/components/HAConnectionProvider";
 
 const caprasimo = Caprasimo({
@@ -27,7 +27,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const config = getDashboardConfig();
+  const areas = getAreas();
 
   return (
     <html
@@ -45,7 +45,7 @@ export default async function RootLayout({
       <body className="min-h-screen pb-[72px]">
         <HAConnectionProvider>
           <ThemeProvider>
-            <AppHeader areas={config.areas} />
+            <AppHeader areas={areas} />
             <main className="mx-auto w-full max-w-[1400px] px-4 sm:px-6 lg:px-7">
               {children}
             </main>

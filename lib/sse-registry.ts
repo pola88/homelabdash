@@ -1,5 +1,6 @@
+import type { EntityState } from "@/lib/schemas/entity-state-schema";
+
 type SSEController = ReadableStreamDefaultController<Uint8Array>;
-type StatePayload = { entity_id: string; state: unknown };
 
 // instrumentation.ts and Route Handlers are bundled in separate module graphs,
 // so plain module-level state would be duplicated (the WS side would broadcast
@@ -37,7 +38,7 @@ export function unregisterSSEClient(controller: SSEController): void {
   console.log(`[sse] client disconnected (${clients.size} total)`);
 }
 
-export function broadcastToClients(data: StatePayload): void {
+export function broadcastToClients(data: EntityState): void {
   cache.set(data.entity_id, data.state);
   const message = frame(data);
   for (const controller of clients) {

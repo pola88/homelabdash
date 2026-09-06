@@ -23,10 +23,30 @@ areas:
   - id: kitchen
     name: "Kitchen"
     cards:
+      # A light card can target several entities at once: the card shows a
+      # single master toggle that acts on all of them.
       - type: light
-        entity: light.kitchen
+        label: "Kitchen lights"
+        entities:
+          - light.kitchen_ceiling
+          - light.kitchen_counter
+          - light.kitchen_table
+
       - type: motion
         entity: binary_sensor.kitchen_occupancy
+
+      # A group card puts unrelated cards together under one title.
+      # `layout` is "stack" (default) or "grid". Groups can nest.
+      - type: group
+        title: "Coffee corner"
+        layout: grid
+        cards:
+          - type: switch
+            entity: switch.coffee_machine
+          - type: metric
+            entity: sensor.coffee_machine_power
+            label: "Power"
+            unit: "W"
 
   - id: infra
     name: "Homelab"

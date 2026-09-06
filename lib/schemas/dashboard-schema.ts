@@ -8,11 +8,24 @@ const entityId = z
     "entity_id must be like domain.name (ex: light.kitchen)",
   );
 
-const lightCardSchema = z.object({
-  type: z.literal("light"),
-  entity: entityId,
+// Cards that control something can target a single entity (`entity`) or
+// several at once (`entities`) — e.g. every light in a room on one toggle.
+const toggleTarget = {
+  entity: entityId.optional(),
+  entities: z.array(entityId).min(1, "entities can not be empty").optional(),
   label: z.string().optional(),
-});
+};
+
+const hasTarget = (c: { entity?: string; entities?: string[] }) =>
+  c.entity != null || c.entities != null;
+
+const lightCardSchema = z
+  .object({ type: z.literal("light"), ...toggleTarget })
+  .refine(hasTarget, { message: "light card needs 'entity' or 'entities'" });
+
+const switchCardSchema = z
+  .object({ type: z.literal("switch"), ...toggleTarget })
+  .refine(hasTarget, { message: "switch card needs 'entity' or 'entities'" });
 
 const motionCardSchema = z.object({
   type: z.literal("motion"),
@@ -37,19 +50,26 @@ const metricCardSchema = z.object({
   max: z.number().optional(),
 });
 
-const switchCardSchema = z.object({
-  type: z.literal("switch"),
-  entity: entityId,
-  label: z.string().optional(),
-});
-
-const cardSchema = z.discriminatedUnion("type", [
+const leafCardSchema = z.union([
   lightCardSchema,
   motionCardSchema,
   climateCardSchema,
   metricCardSchema,
   switchCardSchema,
 ]);
+
+// A container that renders other cards together under one title.
+// Groups can nest; the renderer defaults `layout` to "stack".
+const groupCardSchema = z.object({
+  type: z.literal("group"),
+  title: z.string().optional(),
+  layout: z.enum(["grid", "stack"]).optional(),
+  get cards(): z.ZodArray<typeof cardSchema> {
+    return z.array(cardSchema).min(1, "a group needs at least one card");
+  },
+});
+
+const cardSchema = z.union([leafCardSchema, groupCardSchema]);
 
 const areaSchema = z.object({
   id: z
@@ -75,3 +95,7 @@ export const dashboardConfigSchema = z.object({
 
 export type DashboardConfig = z.infer<typeof dashboardConfigSchema>;
 export type Area = z.infer<typeof areaSchema>;
+export type DashboardCard = z.infer<typeof cardSchema>;
+export type GroupCard = z.infer<typeof groupCardSchema>;
+
+export type Entity = z.infer<typeof leafCardSchema>;
