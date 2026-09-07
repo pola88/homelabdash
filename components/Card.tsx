@@ -1,5 +1,5 @@
 import type { DashboardCard } from "@/lib/schemas/dashboard-schema";
-import { Toggle } from "@/components/cards/Toggle";
+import { Light } from "@/components/cards/Light";
 
 type CardProps = {
   card: DashboardCard;
@@ -11,7 +11,7 @@ export const Card = ({ card }: CardProps) => {
       return "Group card";
     case "light":
     case "switch":
-      return <Toggle entityId={card.entity!} label={card.label} />;
+      return <Light entityId={card.entity!} label={card.label} />;
     case "motion":
       return "Motion Card";
     case "climate":
