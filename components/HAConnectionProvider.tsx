@@ -2,7 +2,6 @@
 
 import { useEffect } from "react";
 import { useUpdateEntity } from "@/store/entities";
-// import type { EntityState } from "@/lib/schemas/entity-state-schema";
 
 type HAConnectionProviderProps = {
   children: React.ReactNode;

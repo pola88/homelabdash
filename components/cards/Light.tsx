@@ -1,13 +1,18 @@
 "use client";
 
 import { useEntity } from "@/store/entities";
-import { Card } from "@/components/tremor/Card";
+import { BaseCard } from "@/components/cards/Base";
 import { Switch } from "@/components/tremor/Switch";
 import { Label } from "@/components/tremor/Label";
 
 type LightProps = {
   entityId: string;
   label?: string;
+  asChild?: boolean;
+};
+
+type LightSkeletonProps = {
+  asChild?: boolean;
 };
 
 /**
@@ -15,15 +20,15 @@ type LightProps = {
  *  Use currentState.attributes.color_mode (example: "onoff") to know if it onoff or dimmer
  */
 
-export const Light = ({ entityId, label }: LightProps) => {
+export const Light = ({ entityId, label, asChild }: LightProps) => {
   const currentState = useEntity(entityId);
 
   if (!currentState) {
-    return <LightSkeleton />;
+    return <LightSkeleton asChild={asChild} />;
   }
 
   return (
-    <Card className="flex items-center gap-2">
+    <BaseCard asChild={asChild}>
       <Switch checked={currentState?.state === "on"} size="large" />
       <Label className="text-base">
         {label ?? currentState?.attributes?.friendly_name}
@@ -31,15 +36,15 @@ export const Light = ({ entityId, label }: LightProps) => {
       <div className="ml-auto">
         {currentState?.state === "on" ? "Prendida" : "Apagada"}
       </div>
-    </Card>
+    </BaseCard>
   );
 };
 
-const LightSkeleton = () => (
-  <Card className="flex animate-pulse items-center gap-2">
+const LightSkeleton = ({ asChild }: LightSkeletonProps) => (
+  <BaseCard className="animate-pulse" asChild={asChild}>
     <div className="h-7.5 w-13 shrink-0 rounded-full bg-gray-200 dark:bg-gray-800" />
 
     <div className="h-7.5 w-full rounded bg-gray-200 dark:bg-gray-800" />
     <div className="ml-auto h-4 w-16 rounded bg-gray-200 dark:bg-gray-800" />
-  </Card>
+  </BaseCard>
 );
