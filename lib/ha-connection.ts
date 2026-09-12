@@ -29,7 +29,6 @@ export const connectToHA = () => {
 
   ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
-
     if (msg.type === "auth_required") {
       ws.send(JSON.stringify({ type: "auth", access_token: HA_TOKEN }));
     }
@@ -67,7 +66,8 @@ export const connectToHA = () => {
   };
 
   ws.onerror = (err) => {
-    console.error("[ha] socket error:", err);
+    const e = err as ErrorEvent;
+    console.error("[ha] socket error:", e.message || e.error || err);
   };
 
   ws.onclose = () => {

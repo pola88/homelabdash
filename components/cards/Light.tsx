@@ -33,9 +33,7 @@ export const Light = ({ entityId, label, asChild }: LightProps) => {
       <Label className="text-base">
         {label ?? currentState?.attributes?.friendly_name}
       </Label>
-      <div className="ml-auto">
-        {currentState?.state === "on" ? "Prendida" : "Apagada"}
-      </div>
+      <div className="ml-auto">{currentState?.state.toUpperCase()}</div>
     </BaseCard>
   );
 };
@@ -44,7 +42,7 @@ const LightSkeleton = ({ asChild }: LightSkeletonProps) => (
   <BaseCard className="animate-pulse" asChild={asChild}>
     <div className="h-7.5 w-13 shrink-0 rounded-full bg-gray-200 dark:bg-gray-800" />
 
-    <div className="h-7.5 w-full rounded bg-gray-200 dark:bg-gray-800" />
-    <div className="ml-auto h-4 w-16 rounded bg-gray-200 dark:bg-gray-800" />
+    <div className="h-7.5 w-full rounded-full bg-gray-200 dark:bg-gray-800" />
+    <div className="ml-auto h-7.5 w-16 rounded-full bg-gray-200 dark:bg-gray-800" />
   </BaseCard>
 );

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { useUpdateEntity } from "@/store/entities";
+import { entityStateSchema } from "@/lib/schemas/entity-state-schema";
 
 type HAConnectionProviderProps = {
   children: React.ReactNode;
@@ -15,7 +16,7 @@ export function HAConnectionProvider({ children }: HAConnectionProviderProps) {
 
     eventSource.onmessage = (event) => {
       const entity = JSON.parse(event.data);
-      updateEntity(entity);
+      updateEntity(entityStateSchema.parse(entity));
     };
 
     eventSource.onerror = (err) => {
